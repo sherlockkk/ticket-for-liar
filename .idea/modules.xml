@@ -3,7 +3,9 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/ticket.iml" filepath="$PROJECT_DIR$/ticket.iml" />
+      <module fileurl="file://H:\WorkSpace\AndroidStudio\fromGithub\ticket-for-liar\app\app.iml" filepath="H:\WorkSpace\AndroidStudio\fromGithub\ticket-for-liar\app\app.iml" />
+      <module fileurl="file://H:\WorkSpace\AndroidStudio\fromGithub\ticket-for-liar\ticket.iml" filepath="H:\WorkSpace\AndroidStudio\fromGithub\ticket-for-liar\ticket.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ticket-for-liar.iml" filepath="$PROJECT_DIR$/ticket-for-liar.iml" />
     </modules>
   </component>
 </project>
