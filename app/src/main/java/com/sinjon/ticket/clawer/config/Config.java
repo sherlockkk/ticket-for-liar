@@ -8,4 +8,9 @@ package com.sinjon.ticket.clawer.config;
 public class Config {
     public static final String ROOT_URL = "http://www.shentehui.com";
 
+    public static String getCatgoryUrl(int id) {
+        String ID = String.valueOf(id);
+        String catgoryUrl = String.format("%s/index/cate/cid/%s.html", ROOT_URL,ID);
+        return catgoryUrl;
+    }
 }
