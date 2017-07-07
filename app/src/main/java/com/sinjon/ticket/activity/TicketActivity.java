@@ -1,5 +1,7 @@
 package com.sinjon.ticket.activity;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -36,7 +38,7 @@ public class TicketActivity extends AppCompatActivity {
         initWebview();
     }
     private void initToolbar() {
-        toolbar_ticket = findViewById(R.id.toolbar_ticket);
+        toolbar_ticket = (Toolbar) findViewById(R.id.toolbar_ticket);
         setSupportActionBar(toolbar_ticket);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar_ticket.setNavigationOnClickListener(new View.OnClickListener() {
@@ -48,7 +50,7 @@ public class TicketActivity extends AppCompatActivity {
     }
 
     private void initWebview() {
-        webview = findViewById(R.id.webview);
+        webview = (WebView) findViewById(R.id.webview);
 
         WebSettings webSettings = webview.getSettings();
         //如果访问的页面中要与Javascript交互，则webview必须设置支持Javascript
@@ -57,12 +59,21 @@ public class TicketActivity extends AppCompatActivity {
         webSettings.setUseWideViewPort(true); //将图片调整到适合webview的大小
         webSettings.setLoadWithOverviewMode(true); // 缩放至屏幕的大小
 
-        webview.loadUrl(good.getTicket());
+        if (good != null) {
+            webview.loadUrl(good.getTicket());
+        }
 
         webview.setWebViewClient(new WebViewClient(){
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
+                if( url.startsWith("http:") || url.startsWith("https:") ) {
+                    return false;
+                }else {
+                    // Otherwise allow the OS to handle things like tel, mailto, etc.
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    startActivity( intent );
+                    finish();
+                }
                 return true;
             }
         });

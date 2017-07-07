@@ -1,6 +1,8 @@
 package com.sinjon.ticket.activity;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -57,9 +59,16 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     @Override
     public void onItemClickListener(Good good, int pos) {
-        Intent intent = new Intent(this, TicketActivity.class);
-        intent.putExtra("good", good);
-        startActivity(intent);
+        if (good.getTicket().startsWith("http://")||good.getTicket().startsWith("https://")){
+            Intent intent = new Intent(this, TicketActivity.class);
+            intent.putExtra("good", good);
+            startActivity(intent);
+        }else {
+            // Otherwise allow the OS to handle things like taobao, tel, mailto, etc.
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(good.getTicket()));
+            startActivity( intent );
+        }
+
     }
 
     class DataAsyncTask extends AsyncTask<Void, Void, List<Good>> {

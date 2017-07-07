@@ -23,7 +23,6 @@ public class ClawerCoreService {
         List<Good> goodList = new ArrayList<>();
         try {
             Document document = Jsoup.connect(Config.ROOT_URL).get();
-            String html = document.html();
             Elements elements = document.select("div.list-good");
             for (Element element : elements) {
                 Good good = new Good();

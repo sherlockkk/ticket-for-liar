@@ -2,6 +2,7 @@ package com.sinjon.ticket.adapter;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Paint;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
@@ -55,13 +56,11 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodAdapter.GoodViewHolder
     @Override
     public void onBindViewHolder(GoodViewHolder holder, final int position) {
         final Good good = goodList.get(position);
-        Glide.with(context).load(good.getImageUrl()).into(holder.iv_pic);
-
-        System.out.println(good.getImageUrl());
+        Glide.with(context).load(good.getImageUrl()).into(holder.iv_pic).onLoadFailed(context.getResources().getDrawable(R.drawable.bg_load));
         holder.tv_title.setText(good.getTitle());
         holder.tv_price_current.setText(good.getPriceCurrent());
         holder.tv_price_old.setText(good.getPriceOld());
-
+        holder.tv_discount.setText(good.getDiscount().substring(1,good.getDiscount().length()-1));
         if (onItemActionListener != null) {
             holder.ll_good.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -88,16 +87,18 @@ public class GoodAdapter extends RecyclerView.Adapter<GoodAdapter.GoodViewHolder
 
     class GoodViewHolder extends RecyclerView.ViewHolder {
         private ImageView iv_pic;
-        private TextView tv_title, tv_price_current, tv_price_old;
+        private TextView tv_title, tv_price_current, tv_price_old,tv_discount;
         private LinearLayout ll_good;
 
         public GoodViewHolder(View itemView) {
             super(itemView);
-            iv_pic = itemView.findViewById(R.id.iv_pic);
-            tv_title = itemView.findViewById(R.id.tv_title);
-            tv_price_current = itemView.findViewById(R.id.tv_price_current);
-            tv_price_old = itemView.findViewById(R.id.tv_price_old);
-            ll_good = itemView.findViewById(R.id.ll_good);
+            iv_pic = (ImageView) itemView.findViewById(R.id.iv_pic);
+            tv_title = (TextView) itemView.findViewById(R.id.tv_title);
+            tv_discount = (TextView) itemView.findViewById(R.id.tv_discount);
+            tv_price_current = (TextView) itemView.findViewById(R.id.tv_price_current);
+            tv_price_old = (TextView) itemView.findViewById(R.id.tv_price_old);
+            tv_price_old.getPaint().setFlags(Paint.STRIKE_THRU_TEXT_FLAG);
+            ll_good = (LinearLayout) itemView.findViewById(R.id.ll_good);
         }
     }
 }
