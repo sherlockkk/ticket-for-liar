@@ -9,13 +9,16 @@ import android.os.Parcelable;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
@@ -27,7 +30,7 @@ import com.sinjon.ticket.pojo.Good;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, GoodAdapter.OnItemActionListener, NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements SwipeRefreshLayout.OnRefreshListener, GoodAdapter.OnItemActionListener, NavigationView.OnNavigationItemSelectedListener, SearchView.OnQueryTextListener {
 
     private ClawerCoreService clawerCoreService;
 
@@ -37,6 +40,10 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
     private SwipeRefreshLayout srl_main;
     private GoodAdapter goodAdapter;
     int catgoryFlag = 0;
+
+    private String keyWord = "";
+
+    private SearchView searchView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -178,6 +185,41 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         return true;
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_search_view, menu);
+        MenuItem searchItem = menu.findItem(R.id.menu_search);
+        searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.onActionViewExpanded();
+        searchView.clearFocus();//searchview初始化的时候清除焦点以防止一开始就弹出软键盘
+        searchView.setOnQueryTextListener(this);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    /**
+     * SearchView输入框中文字提交时的监听
+     * @param query
+     * @return
+     */
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        keyWord = query;
+        catgoryFlag = 15;
+        fetchData(15);//搜索
+        return false;
+    }
+
+    /**
+     * SearchView输入框中文字改变时的监听
+     * @param newText
+     * @return
+     */
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        keyWord = newText;
+        return false;
+    }
+
     /**
      * 从网络异步请求数据,防止ANR
      */
@@ -189,12 +231,18 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
         @Override
         protected List<Good> doInBackground(Integer... integers) {
-            List<Good> goodList;
+            List<Good> goodList = null;
             clawerCoreService = new ClawerCoreService();
-            if (integers[0] == 0) {
-                goodList = clawerCoreService.fetchHomeGoodInfo();
-            } else {
-                goodList = clawerCoreService.fetchCatgoryGoodInfo(integers[0]);
+            switch (integers[0]) {
+                case 0:
+                    goodList = clawerCoreService.fetchHomeGoodInfo();
+                    break;
+                case 15:
+                    goodList = clawerCoreService.fetchDataFromSearch(keyWord);
+                    break;
+                default:
+                    goodList = clawerCoreService.fetchCatgoryGoodInfo(integers[0]);
+                    break;
             }
             return goodList;
         }
